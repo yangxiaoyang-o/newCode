@@ -13,6 +13,7 @@ const bcrytp = require('bcryptjs')
 exports.regUser = (req, res) => {
   // 接收客户端提交到服务器的信息
   const userInfo = req.body
+  console.log(userInfo)
   // 对数据进行合法校验
   if (!userInfo.username || !userInfo.password) {
     return res.send({ status: 1, message: '用户名或密码不合法！' })
