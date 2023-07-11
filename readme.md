@@ -44,8 +44,6 @@ create vue admin
 2. 使用router.addRoute()函数添加子路由。
 3. 但是router.addRoute()方法一次只能添加一个路由，如果有10个或者8个路由，那么就要调用10次或8次，addRoute()函数，会造成路由代码冗余的问题。
 
-
-
 `解决方案：`
 
 1. 定义一个路由配置文件 config.js 配置文件。
@@ -153,10 +151,9 @@ const configRouter = () =>{
     // 使用router.addRoute()方法，添加子路由给mainbox组件
     router.addRoute('mainbox',item)
   });
+  // 改变 isGetterRouter 值为true
+	store.commit("changeGetterRouter",true)
 }
-
-// 改变 isGetterRouter 值为true
-store.commit("changeGetterRouter",true)
 export default router
 ```
 
@@ -355,10 +352,6 @@ npm install axios
 
 
 
-
-
-
-
 # 3. server深入分析
 
 ---
@@ -424,5 +417,4 @@ app.use(express.urlencoded({extended:false}))
 
 
 ## 5. 创建数据库链接
-
 

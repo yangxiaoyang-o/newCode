@@ -3,6 +3,6 @@ const joi = require('joi')
 
 /**
  * 验证规则说明：
- * 
+ *
  */
 const username = joi.string().alphanum().min(3).max(10).required()

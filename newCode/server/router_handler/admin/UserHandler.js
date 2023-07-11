@@ -68,7 +68,9 @@ exports.regUser = (req, res) => {
  */
 exports.login = (req, res) => {
   // 接收表单数据
-  const userInfo = req.body
+  // const userInfo = req.body
+  console.log('OK')
+  console.log(req.body)
 }
 
 /*
