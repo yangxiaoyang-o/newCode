@@ -1,6 +1,8 @@
 // 1. 导入 express
 const express = require('express')
+// 4.1 导入 cors 中间件
 const cors = require('cors')
+const bodyParser = require('body-parser')
 
 // 2. 创建服务器的实例对象
 const app = express()
@@ -14,15 +16,17 @@ const app = express()
 //        var bodyParser = require('body-parser')
 //        app.use(bodyParser.json())
 //  bodyParser用于解析客户端请求的body中的内容，内部使用JSON编码处理。
-
 app.use(bodyParser.json())
 
+// 4.2  将cors注册为全局中间件
 app.use(cors())
+
+// 4.3 配置解析表单数据的中间件，注意：这个中间件，只能解析 application/x-www-form-urlencoded 格式的表单数据
 app.use(express.urlencoded({ extended: false }))
-var bodyParser = require('body-parser')
 
 // 注意：一定要在路由之前定义响应中间件
 app.use((req, res, next) => {
+  // status 默认值为1，就是请求失败的响应码
   res.cc = function (err, status = 1) {
     res.send({
       status,
@@ -31,6 +35,13 @@ app.use((req, res, next) => {
   }
   next()
 })
+
+// 注意：一定要在路由之前配置解析 Token 中间件
+// const expressJWT = require('express-jwt')
+// const config = require('./config')
+// app.use(
+//   expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api/] })
+// )
 
 // 导入并注册用户路由模块
 const userRouter = require('./router/admin/UserRouter')
