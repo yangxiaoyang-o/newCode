@@ -533,9 +533,20 @@ const joi = require('joi')
 
 /**
  * 验证规则说明：
- *
+ * string()
+ * alphanum()
+ * min(3)
+ * max(10)
+ * required()
  */
+
 const username = joi.string().alphanum().min(3).max(10).required()
 
 ```
 
+## 9. 用户登录
+
+> 1. 检测表单数据是否合法。
+> 2. 根据用户名查询用户数据。
+> 3. 判断用户输入的密码是否正确。
+> 4. 生成JWT的Token字符串。

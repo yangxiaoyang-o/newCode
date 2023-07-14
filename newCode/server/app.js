@@ -4,6 +4,9 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
+// 为表单中携带的每个数据项，定义验证规则
+const joi = require('joi')
+
 // 2. 创建服务器的实例对象
 const app = express()
 
@@ -46,6 +49,15 @@ app.use((req, res, next) => {
 // 导入并注册用户路由模块
 const userRouter = require('./router/admin/UserRouter')
 app.use('/adminapi', userRouter)
+
+// 注意：在路由之后捕获中间件，定义错误级别中间件（表单数据验证）
+app.use((err, req, res, next) => {
+  // 验证失败导致的错误
+  if (err instanceof joi.ValidationError) return res.cc(err)
+
+  // 注意：这里可以调用res.cc()函数是因为前面通过中间件挂载了cc()函数
+  res.cc('未知错误')
+})
 
 // 3.监听服务器
 app.listen(3007, function () {
