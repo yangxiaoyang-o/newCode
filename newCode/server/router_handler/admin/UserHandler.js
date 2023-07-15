@@ -75,7 +75,6 @@ exports.regUser = (req, res) => {
 exports.login = (req, res) => {
   // 1. 接收客户端提交表单数据
   const userInfo = req.body
-  console.log(userInfo)
   // 2. 定义SQL语句，根据用户名查询数据是否存在
   const sql = `select * from user where username=?`
   db.query(sql, userInfo.username, (err, result) => {
@@ -110,10 +109,11 @@ exports.login = (req, res) => {
       expiresIn: config.expiresIn
     })
     // 调用res.send()将Token响应给客户端
+    const token = 'Bearer ' + tokenStr
     res.send({
       status: 0,
       message: '登录成功!',
-      token: 'Bearer ' + tokenStr
+      token: token
     })
   })
 }

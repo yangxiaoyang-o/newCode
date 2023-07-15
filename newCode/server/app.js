@@ -45,8 +45,15 @@ const config = require('./config')
 app.use(
   // expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api/] })
   expressJWT({ secret: config.jwtSecretKey }).unless(
-    { path: ['/adminapi/user/login'] },
-    { path: [/^\/api/] }
+    // { path: ['/adminapi/user/login'] },
+    // { path: [/^\/api/] }
+    {
+      path: [
+        { url: '/adminapi/user/reguser' },
+        { url: '/adminapi/user/login' },
+        { url: [/^\/api/] }
+      ]
+    }
   )
 )
 
