@@ -40,11 +40,15 @@ app.use((req, res, next) => {
 })
 
 // 注意：一定要在路由之前配置解析 Token 中间件
-// const expressJWT = require('express-jwt')
-// const config = require('./config')
-// app.use(
-//   expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api/] })
-// )
+const expressJWT = require('express-jwt')
+const config = require('./config')
+app.use(
+  // expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api/] })
+  expressJWT({ secret: config.jwtSecretKey }).unless(
+    { path: ['/adminapi/user/login'] },
+    { path: [/^\/api/] }
+  )
+)
 
 // 导入并注册用户路由模块
 const userRouter = require('./router/admin/UserRouter')
@@ -53,8 +57,16 @@ app.use('/adminapi', userRouter)
 // 注意：在路由之后捕获中间件，定义错误级别中间件（表单数据验证）
 app.use((err, req, res, next) => {
   // 验证失败导致的错误
-  if (err instanceof joi.ValidationError) return res.cc(err)
-
+  if (err instanceof joi.ValidationError) {
+    return res.cc(err)
+  }
+  // token认证中间件
+  if (err.name === 'UnauthorizedError') {
+    return res.send({
+      statu: 0,
+      message: '身份认证失败！'
+    })
+  }
   // 注意：这里可以调用res.cc()函数是因为前面通过中间件挂载了cc()函数
   res.cc('未知错误')
 })

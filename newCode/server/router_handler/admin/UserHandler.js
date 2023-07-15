@@ -4,6 +4,10 @@ const db = require('../../db/index')
 // 导入bcryptjs密码加密 npm i bcryptjs@2.4.3
 const bcrytp = require('bcryptjs')
 
+// 导入jsonwebtoken生成token字符串
+const jwt = require('jsonwebtoken')
+const config = require('../../config.js')
+
 /*
  * @description: 注册新用户
  * @author: yang_xiaoyang
@@ -71,6 +75,7 @@ exports.regUser = (req, res) => {
 exports.login = (req, res) => {
   // 1. 接收客户端提交表单数据
   const userInfo = req.body
+  console.log(userInfo)
   // 2. 定义SQL语句，根据用户名查询数据是否存在
   const sql = `select * from user where username=?`
   db.query(sql, userInfo.username, (err, result) => {
@@ -97,20 +102,19 @@ exports.login = (req, res) => {
         message: '登录失败，密码错误！'
       })
     }
-
-    console.log('OK')
-    // 4. TODO：在服务器端生成字符串
-    // const user = { ...result[0], password: '', user_pic: '' }
+    // 4. TODO：在服务器端生成Token字符串
+    // 剔除用户密码和头像
+    const user = { ...result[0], password: '', user_pic: '' }
     // // 对用户的信息进行加密，生成Token字符串
-    // const tokenStr = jwt.sign(user, config.jwtSecretKey, {
-    //   expiresIn: config.expiresIn
-    // })
+    const tokenStr = jwt.sign(user, config.jwtSecretKey, {
+      expiresIn: config.expiresIn
+    })
     // 调用res.send()将Token响应给客户端
-    // res.send({
-    //   status: 0,
-    //   message: '登录成功!',
-    //   token: 'Bearer ' + tokenStr
-    // })
+    res.send({
+      status: 0,
+      message: '登录成功!',
+      token: 'Bearer ' + tokenStr
+    })
   })
 }
 

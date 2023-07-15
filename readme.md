@@ -550,3 +550,8 @@ const username = joi.string().alphanum().min(3).max(10).required()
 > 2. 根据用户名查询用户数据。
 > 3. 判断用户输入的密码是否正确。
 > 4. 生成JWT的Token字符串。
+
+## 10. 生成JWT的Token字符串
+
+> 核心注意点：在生成token字符串的时候，一定要剔除密码和头像。
+
