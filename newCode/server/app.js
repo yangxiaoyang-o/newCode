@@ -7,6 +7,9 @@ const bodyParser = require('body-parser')
 // 为表单中携带的每个数据项，定义验证规则
 const joi = require('joi')
 
+// 引入jsonwebtoken验证Token是否过期
+const jwt = require('jsonwebtoken')
+
 // 2. 创建服务器的实例对象
 const app = express()
 
@@ -57,6 +60,27 @@ app.use(
   )
 )
 
+app.use((req, res, next) => {
+  if (
+    req.url === '/adminapi/user/login' ||
+    req.url === '/adminapi/user/reguser'
+  ) {
+    next()
+    return
+  }
+  const token = req.headers['authorization'].split(' ')[1]
+  jwt.verify(token, config.jwtSecretKey, (err, payload) => {
+    if (err) {
+      res.send({
+        statu: 401,
+        message: 'Token已过期'
+      })
+    } else {
+      next()
+    }
+  })
+})
+
 // 导入并注册用户路由模块
 const userRouter = require('./router/admin/UserRouter')
 app.use('/adminapi', userRouter)
@@ -70,7 +94,7 @@ app.use((err, req, res, next) => {
   // token认证中间件
   if (err.name === 'UnauthorizedError') {
     return res.send({
-      statu: 0,
+      statu: 1,
       message: '身份认证失败！'
     })
   }

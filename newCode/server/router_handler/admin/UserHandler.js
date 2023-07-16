@@ -110,10 +110,18 @@ exports.login = (req, res) => {
     })
     // 调用res.send()将Token响应给客户端
     const token = 'Bearer ' + tokenStr
+    // console.log(result)
     res.send({
       status: 0,
       message: '登录成功!',
-      token: token
+      token: token,
+      data: {
+        username: result[0].username,
+        gender: result[0].gender ? result[0].gender : 0,
+        introduction: result[0].introduction,
+        avatar: result[0].avatar,
+        role: result[0].role
+      }
     })
   })
 }
