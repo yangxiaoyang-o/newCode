@@ -7,7 +7,6 @@ const bcrytp = require('bcryptjs')
 // 导入jsonwebtoken生成token字符串
 const jwt = require('jsonwebtoken')
 const config = require('../../config.js')
-
 /*
  * @description: 注册新用户
  * @author: yang_xiaoyang
@@ -116,6 +115,7 @@ exports.login = (req, res) => {
       message: '登录成功!',
       token: token,
       data: {
+        id: result[0].id,
         username: result[0].username,
         gender: result[0].gender ? result[0].gender : 0,
         introduction: result[0].introduction,
@@ -133,5 +133,38 @@ exports.login = (req, res) => {
  * @version: V1.0.0
  */
 exports.upload = (req, res) => {
-  console.log(req.file)
+  const gender = Number(req.body.gender)
+  const { id, username, introduction } = req.body
+  const avatar = `/avataruploads/${req.file.filename}`
+  // console.log(gender, id, username, introduction, avatar)
+  const sql = `update user set username = ?, gender = ?,introduction = ?, avatar = ? where id = ?`
+  db.query(sql, [username, gender, introduction, avatar, id], (err, result) => {
+    if (err) {
+      return res.send({
+        status: 1,
+        message: err.message
+      })
+    }
+    if (result.affectedRows !== 1) {
+      return res.send({
+        status: 1,
+        message: '更新用户信息失败！'
+      })
+    }
+    res.send({
+      status: 0,
+      message: '更新用户信息成功！',
+      data: {
+        id,
+        username,
+        gender,
+        introduction,
+        avatar
+      }
+    })
+  })
+
+  // console.log(req.file, req.body)
+  // var payload = jwt.verify(token)
+  // console.log(payload._id)
 }
