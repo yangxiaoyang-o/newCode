@@ -135,36 +135,66 @@ exports.login = (req, res) => {
 exports.upload = (req, res) => {
   const gender = Number(req.body.gender)
   const { id, username, introduction } = req.body
-  const avatar = `/avataruploads/${req.file.filename}`
-  // console.log(gender, id, username, introduction, avatar)
-  const sql = `update user set username = ?, gender = ?,introduction = ?, avatar = ? where id = ?`
-  db.query(sql, [username, gender, introduction, avatar, id], (err, result) => {
-    if (err) {
-      return res.send({
-        status: 1,
-        message: err.message
-      })
-    }
-    if (result.affectedRows !== 1) {
-      return res.send({
-        status: 1,
-        message: '更新用户信息失败！'
-      })
-    }
-    res.send({
-      status: 0,
-      message: '更新用户信息成功！',
-      data: {
-        id,
-        username,
-        gender,
-        introduction,
-        avatar
-      }
-    })
-  })
+  const avatar = req.file ? `/avataruploads/${req.file.filename}` : ''
 
-  // console.log(req.file, req.body)
-  // var payload = jwt.verify(token)
-  // console.log(payload._id)
+  // 如果用户更新信息的时候没有传图片，那就不更新图片，更新其它信息。
+  // 在这个位置如果不判断图片是否存在，更新数据就会失败。因为没有图片
+  if (avatar) {
+    const sql = `update user set username = ?, gender = ?,introduction = ?, avatar = ? where id = ?`
+    db.query(
+      sql,
+      [username, gender, introduction, avatar, id],
+      (err, result) => {
+        if (err) {
+          return res.send({
+            status: 1,
+            message: err.message
+          })
+        }
+        if (result.affectedRows !== 1) {
+          return res.send({
+            status: 1,
+            message: '更新用户信息失败！'
+          })
+        }
+        res.send({
+          status: 0,
+          message: '更新用户信息成功！',
+          data: {
+            id,
+            username,
+            gender,
+            introduction,
+            avatar // 如果用户没有传图片，更新数据成功 avatar 这个参数也不用返回，返回会覆盖vuex中的数据
+          }
+        })
+      }
+    )
+  } else {
+    const sql = `update user set username = ?, gender = ?,introduction = ? where id = ?`
+    db.query(sql, [username, gender, introduction, id], (err, result) => {
+      if (err) {
+        return res.send({
+          status: 1,
+          message: err.message
+        })
+      }
+      if (result.affectedRows !== 1) {
+        return res.send({
+          status: 1,
+          message: '更新用户信息失败！'
+        })
+      }
+      res.send({
+        status: 0,
+        message: '更新用户信息成功！',
+        data: {
+          id,
+          username,
+          gender,
+          introduction
+        }
+      })
+    })
+  }
 }
