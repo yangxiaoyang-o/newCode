@@ -198,3 +198,10 @@ exports.upload = (req, res) => {
     })
   }
 }
+
+/**
+ * 添加用户信息
+ * @param {*} req
+ * @param {*} res
+ */
+exports.addUser = (req, res) => {}
