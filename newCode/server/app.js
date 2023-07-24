@@ -98,7 +98,6 @@ app.use((err, req, res, next) => {
       message: '身份认证失败！'
     })
   }
-  // 注意：这里可以调用res.cc()函数是因为前面通过中间件挂载了cc()函数
   res.cc('未知错误')
 })
 

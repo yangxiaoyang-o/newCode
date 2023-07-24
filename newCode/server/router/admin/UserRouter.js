@@ -32,5 +32,8 @@ const upload = multer({ dest: 'public/avataruploads/' })
 // 更新用户信息（含图片）
 UserRouter.post('/user/upload', upload.single('file'), UserController.upload)
 
+// 添加新用户
+UserRouter.post('/user/addUser', upload.single('file'), UserController.addUser)
+
 // 将路由对象共享出去
 module.exports = UserRouter

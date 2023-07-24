@@ -204,4 +204,43 @@ exports.upload = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-exports.addUser = (req, res) => {}
+exports.addUser = (req, res) => {
+  const gender = Number(req.body.gender)
+  const password = bcrytp.hashSync(req.body.password, 10)
+  const { username, role, introduction } = req.body
+  const avatar = req.file ? `/avataruploads/${req.file.originalname}` : ''
+  const sql = `select * from user where username = ?`
+  db.query(sql, username, (err, result) => {
+    if (result.length > 0) {
+      res.send({
+        status: 1,
+        message: '用户已存在，请重新添加！'
+      })
+    }
+  })
+
+  // 添加用户信息
+  const sqlStr = `insert into user set ? `
+  db.query(
+    sqlStr,
+    { username, password, gender, introduction, role, avatar },
+    (err, result) => {
+      if (err) {
+        return res.send({
+          status: 1,
+          message: err.message
+        })
+      }
+      if (result.affectedRows !== 1) {
+        return res.send({
+          status: 1,
+          message: '添加用户失败，请重新添加！'
+        })
+      }
+      return res.send({
+        status: 0,
+        message: '添加用户成功！'
+      })
+    }
+  )
+}
