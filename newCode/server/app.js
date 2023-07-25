@@ -47,17 +47,13 @@ const expressJWT = require('express-jwt')
 const config = require('./config')
 app.use(
   // expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api/] })
-  expressJWT({ secret: config.jwtSecretKey }).unless(
-    // { path: ['/adminapi/user/login'] },
-    // { path: [/^\/api/] }
-    {
-      path: [
-        { url: '/adminapi/user/reguser' },
-        { url: '/adminapi/user/login' },
-        { url: [/^\/api/] }
-      ]
-    }
-  )
+  expressJWT({ secret: config.jwtSecretKey }).unless({
+    path: [
+      { url: '/adminapi/user/reguser' },
+      { url: '/adminapi/user/login' },
+      { url: [/^\/api/] }
+    ]
+  })
 )
 
 app.use((req, res, next) => {
@@ -91,16 +87,16 @@ app.use((err, req, res, next) => {
   if (err instanceof joi.ValidationError) {
     return res.cc(err)
   }
-  // token认证中间件
-  if (err.name === 'UnauthorizedError') {
-    return res.send({
-      statu: 1,
-      message: '身份认证失败！'
-    })
-  }
-  res.cc('未知错误')
+  // // token认证中间件
+  // if (err.name === 'UnauthorizedError') {
+  //   return res.send({
+  //     statu: 1,
+  //     message: '身份认证失败！'
+  //   })
+  // }
+  // res.cc('未知错误')
 })
-
+app.use(express.static('./public')) //将静态资源托管，这样才能在浏览器上直接访问预览图片或则html页面
 // 3.监听服务器
 app.listen(3007, function () {
   console.log('api server running at http://127.0.0.1:3007')

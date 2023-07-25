@@ -35,5 +35,8 @@ UserRouter.post('/user/upload', upload.single('file'), UserController.upload)
 // 添加新用户
 UserRouter.post('/user/addUser', upload.single('file'), UserController.addUser)
 
+// 获取用户列表
+UserRouter.get('/user/getList', UserController.getList)
+
 // 将路由对象共享出去
 module.exports = UserRouter

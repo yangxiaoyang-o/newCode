@@ -7,11 +7,11 @@ const bcrytp = require('bcryptjs')
 // 导入jsonwebtoken生成token字符串
 const jwt = require('jsonwebtoken')
 const config = require('../../config.js')
-/*
- * @description: 注册新用户
- * @author: yang_xiaoyang
- * @date: 2023-03-28 14:39:19
- * @version: V1.0.0
+
+/**
+ * 用户注册
+ * @param {*} req
+ * @param {*} res
  */
 exports.regUser = (req, res) => {
   // 接收客户端提交到服务器的信息
@@ -65,11 +65,10 @@ exports.regUser = (req, res) => {
   return
 }
 
-/*
- * @description: 用户登录
- * @author: yang_xiaoyang
- * @date: 2023-03-28 14:39:52
- * @version: V1.0.0
+/**
+ * 用户登录
+ * @param {*} req
+ * @param {*} res
  */
 exports.login = (req, res) => {
   // 1. 接收客户端提交表单数据
@@ -126,17 +125,15 @@ exports.login = (req, res) => {
   })
 }
 
-/*
- * @description: 用户信息更新
- * @author: yang_xiaoyang
- * @date: 2023-03-28 14:40:12
- * @version: V1.0.0
+/**
+ * 更新用户信息
+ * @param {*} req
+ * @param {*} res
  */
 exports.upload = (req, res) => {
   const gender = Number(req.body.gender)
   const { id, username, introduction } = req.body
   const avatar = req.file ? `/avataruploads/${req.file.filename}` : ''
-
   // 如果用户更新信息的时候没有传图片，那就不更新图片，更新其它信息。
   // 在这个位置如果不判断图片是否存在，更新数据就会失败。因为没有图片
   if (avatar) {
@@ -165,7 +162,7 @@ exports.upload = (req, res) => {
             username,
             gender,
             introduction,
-            avatar // 如果用户没有传图片，更新数据成功 avatar 这个参数也不用返回，返回会覆盖vuex中的数据
+            avatar: 'http://127.0.0.1:3007/public' + avatar // 如果用户没有传图片，更新数据成功 avatar 这个参数也不用返回，返回会覆盖vuex中的数据
           }
         })
       }
@@ -208,7 +205,7 @@ exports.addUser = (req, res) => {
   const gender = Number(req.body.gender)
   const password = bcrytp.hashSync(req.body.password, 10)
   const { username, role, introduction } = req.body
-  const avatar = req.file ? `/avataruploads/${req.file.originalname}` : ''
+  const avatar = req.file ? `/avataruploads/${req.file.filename}` : ''
   const sql = `select * from user where username = ?`
   db.query(sql, username, (err, result) => {
     if (result.length > 0) {
@@ -243,4 +240,32 @@ exports.addUser = (req, res) => {
       })
     }
   )
+}
+
+/**
+ * 获取用户列表
+ * @param {*} req
+ * @param {*} res
+ */
+exports.getList = (req, res) => {
+  const sql = `select * from user`
+  db.query(sql, (err, result) => {
+    if (err) {
+      return res.send({
+        status: 1,
+        message: err.message
+      })
+    }
+    if (result.length === 0) {
+      return res.send({
+        status: 1,
+        message: '获取用户列表失败！'
+      })
+    }
+    return res.send({
+      status: 0,
+      message: '获取用户列表成功！',
+      data: result
+    })
+  })
 }
