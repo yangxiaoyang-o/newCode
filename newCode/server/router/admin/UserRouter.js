@@ -38,5 +38,8 @@ UserRouter.post('/user/addUser', upload.single('file'), UserController.addUser)
 // 获取用户列表
 UserRouter.get('/user/getList', UserController.getList)
 
+// 删除用户
+UserRouter.delete('/user/deleteUser', UserController.deleteUser)
+
 // 将路由对象共享出去
 module.exports = UserRouter

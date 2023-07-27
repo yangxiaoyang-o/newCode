@@ -96,7 +96,6 @@ app.use((err, req, res, next) => {
   // }
   // res.cc('未知错误')
 })
-app.use(express.static('./public')) //将静态资源托管，这样才能在浏览器上直接访问预览图片或则html页面
 // 3.监听服务器
 app.listen(3007, function () {
   console.log('api server running at http://127.0.0.1:3007')

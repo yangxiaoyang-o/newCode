@@ -162,7 +162,8 @@ exports.upload = (req, res) => {
             username,
             gender,
             introduction,
-            avatar: 'http://127.0.0.1:3007/public' + avatar // 如果用户没有传图片，更新数据成功 avatar 这个参数也不用返回，返回会覆盖vuex中的数据
+            avatar
+            // avatar: 'http://127.0.0.1:3007/public' + avatar // 如果用户没有传图片，更新数据成功 avatar 这个参数也不用返回，返回会覆盖vuex中的数据
           }
         })
       }
@@ -268,4 +269,13 @@ exports.getList = (req, res) => {
       data: result
     })
   })
+}
+
+/**
+ * 删除用户
+ * @param {*} req
+ * @param {*} res
+ */
+exports.deleteUser = (req, res) => {
+  console.log(12121212)
 }
