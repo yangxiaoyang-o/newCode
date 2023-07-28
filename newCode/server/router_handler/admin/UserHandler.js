@@ -277,5 +277,20 @@ exports.getList = (req, res) => {
  * @param {*} res
  */
 exports.deleteUser = (req, res) => {
-  console.log(12121212)
+  let userId = req.params.id
+  const sql = `delete from user where id=?`
+  db.query(sql, userId, (err, result) => {
+    if (err) {
+      return res.send({
+        status: 1,
+        message: err.message
+      })
+    }
+    if (result.affectedRows !== 0) {
+      return res.send({
+        status: 0,
+        message: '删除用户成功！'
+      })
+    }
+  })
 }
