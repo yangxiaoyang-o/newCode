@@ -41,5 +41,8 @@ UserRouter.get('/user/getList', UserController.getList)
 // 删除用户
 UserRouter.delete('/user/deleteUser/:id', UserController.deleteUser)
 
+// 编辑用户
+UserRouter.post('/user/editUser/:id', UserController.editUser)
+
 // 将路由对象共享出去
 module.exports = UserRouter

@@ -294,3 +294,33 @@ exports.deleteUser = (req, res) => {
     }
   })
 }
+
+/**
+ * 编辑用户
+ * @param {*} req
+ * @param {*} res
+ */
+exports.editUser = (req, res) => {
+  const userId = req.params.id
+  const { username, password, role, introduction } = req.body
+  const sql = `update user set username=?,password = ?,role = ?, introduction = ? where id = ?`
+  // db.query(
+  //   sql,
+  //   [username, password, role, introduction, userId],
+  //   (err, result) => {
+  //     if (err) {
+  //       return res.send({
+  //         status: 1,
+  //         message: err.message
+  //       })
+  //     }
+
+  //     if (result.affectedRows !== 0) {
+  //       return res.send({
+  //         status: 0,
+  //         message: '用户信息更新成功！'
+  //       })
+  //     }
+  //   }
+  // )
+}
