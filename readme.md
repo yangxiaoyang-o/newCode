@@ -4,45 +4,39 @@
 
 ## 1. admin
 
-1. admin后台管理系统。
-2. 使用vue框架搭建。
-
-
+1. admin 后台管理系统。
+2. 使用 vue 框架搭建。
 
 ## 2. server
 
 1. 后台管理系统代码实现。
 
-2. 使用node.js语言，express框架。
-
-   
+2. 使用 node.js 语言，express 框架。
 
 ## 3. web
 
-1. web企业门户网站。
-2. 使用vue框架搭建。
+1. web 企业门户网站。
+2. 使用 vue 框架搭建。
 
+# 2. admin 深入分析
 
-
-# 2. admin深入分析
-
-----
+---
 
 ## 1. 创建项目
 
-1.  使用vue框架创建项目。
+1.  使用 vue 框架创建项目。
 
 ```js
-create vue admin   
+create vue admin
 ```
 
-2. 清除admin目录文件中不需要的文件。
+2. 清除 admin 目录文件中不需要的文件。
 
 ## 2. 路由分析
 
 1. 嵌套的子路由是根据用户全选访问的，不是刚开始什么地方都可以去，那样就乱套了。
-2. 使用router.addRoute()函数添加子路由。
-3. 但是router.addRoute()方法一次只能添加一个路由，如果有10个或者8个路由，那么就要调用10次或8次，addRoute()函数，会造成路由代码冗余的问题。
+2. 使用 router.addRoute()函数添加子路由。
+3. 但是 router.addRoute()方法一次只能添加一个路由，如果有 10 个或者 8 个路由，那么就要调用 10 次或 8 次，addRoute()函数，会造成路由代码冗余的问题。
 
 `解决方案：`
 
@@ -105,7 +99,7 @@ const routes = [
     path: '/mainbox',
     name: 'mainbox',
     component: MainBox
-  },
+  }
 ]
 
 const router = createRouter({
@@ -119,23 +113,23 @@ const router = createRouter({
  *  from:
  *  next()
  */
-router.beforeEach((to,from,next)=>{
-  if(to.name === 'login'){
+router.beforeEach((to, from, next) => {
+  if (to.name === 'login') {
     next()
-  }else{
+  } else {
     // 如果授权(已经登录过了) next()
     // 未授权，重定向到login
-    if(!localStorage.getItem("token")){
+    if (!localStorage.getItem('token')) {
       next({
-        path:'/login'
+        path: '/login'
       })
-    }else{
-      if(!store.state.isGetterRouter){
+    } else {
+      if (!store.state.isGetterRouter) {
         configRouter()
         next({
-          path:to.fullPath
+          path: to.fullPath
         })
-      }else{
+      } else {
         next()
       }
     }
@@ -145,21 +139,21 @@ router.beforeEach((to,from,next)=>{
 /**
  * 定义遍历路由函数
  */
-const configRouter = () =>{
-  // 遍历子路由（config.js文件中配置的子路由） 
-  RouterConfig.forEach(item => {
+const configRouter = () => {
+  // 遍历子路由（config.js文件中配置的子路由）
+  RouterConfig.forEach((item) => {
     // 使用router.addRoute()方法，添加子路由给mainbox组件
-    router.addRoute('mainbox',item)
-  });
+    router.addRoute('mainbox', item)
+  })
   // 改变 isGetterRouter 值为true
-	store.commit("changeGetterRouter",true)
+  store.commit('changeGetterRouter', true)
 }
 export default router
 ```
 
 ## 3. element-plus
 
-1. 安装element-plus插件
+1. 安装 element-plus 插件
 
 ```js
 npm install element-plus --save
@@ -168,7 +162,7 @@ npm install element-plus --save
 2. 注册插件
 
 ```js
-import ElementPlus from 'element-plus'    // main.js文件中引入
+import ElementPlus from 'element-plus' // main.js文件中引入
 import 'element-plus/dist/index.css'
 
 // 注册插件
@@ -184,16 +178,16 @@ app.use(ElementPlus)
 1. particles.vue3 粒子库安装。
 
 ```js
-npm install --save particles.vue3 
+npm install --save particles.vue3
 // 注意：tsparticles 一定要安装的，今天在使用的时候没有安装导致只有背景，没有动画效果，因为刚开始以为这个是使用（tyscript的时候使用的）。
-npm install --save tsparticles 
+npm install --save tsparticles
 ```
 
-2. 注册组件：main.js中注册。
+2. 注册组件：main.js 中注册。
 
 ```js
-import Particles from "particles.vue3";
-createApp(App).use(Particles);
+import Particles from 'particles.vue3'
+createApp(App).use(Particles)
 ```
 
 3. 使用 particles.vue3 粒子库。
@@ -201,103 +195,111 @@ createApp(App).use(Particles);
 ```html
 <!-- 1. template 模板中 -->
 <template>
-	<div>
-		<Particles id="tsparticles" :particlesInit="particlesInit" :particlesLoaded="particlesLoaded" :options="particles" />
-	</div>
+  <div>
+    <Particles
+      id="tsparticles"
+      :particlesInit="particlesInit"
+      :particlesLoaded="particlesLoaded"
+      :options="particles"
+    />
+  </div>
 </template>
 ```
 
 ```js
 // 2. 引入粒子动画（存放在script标签对立面的）
-import { loadFull } from "tsparticles"
+import { loadFull } from 'tsparticles'
 // 将粒子动画抽离出去了，避免文件的冗余
-import { particles } from "../components/particles/particles.js"
+import { particles } from '../components/particles/particles.js'
 
 // 3. 粒子动画（从文档上复制的，一定需要引入的）
-const particlesInit = async engine => {
+const particlesInit = async (engine) => {
   await loadFull(engine)
 }
-const particlesLoaded = async container => {
-  console.log("Particles container loaded", container)
+const particlesLoaded = async (container) => {
+  console.log('Particles container loaded', container)
 }
 ```
 
 ```js
 // 3. 抽离的 particles.js 文件
 export const particles = {
-  background: {                 // 背景颜色
+  background: {
+    // 背景颜色
     color: {
-        value: '#2d3a4b'
+      value: '#2d3a4b'
     }
   },
   fpsLimit: 20,
   interactivity: {
     events: {
-        onClick: {              // 点击是否添加，默认为true，改成false 
-            enable: false,
-            mode: 'push'        // click模式，可选参数：["push", "remove", "repulse", "bubble"]
-        },
-        onHover: {              
-            enable: true,
-            mode: 'repulse'    // hover模式，可选参数：["grab", "repulse", "bubble"]
-        },
-        resize: true
+      onClick: {
+        // 点击是否添加，默认为true，改成false
+        enable: false,
+        mode: 'push' // click模式，可选参数：["push", "remove", "repulse", "bubble"]
+      },
+      onHover: {
+        enable: true,
+        mode: 'repulse' // hover模式，可选参数：["grab", "repulse", "bubble"]
+      },
+      resize: true
     },
     modes: {
       bubble: {
-          distance: 400,
-          duration: 2,
-          opacity: 0.8,
-          size: 40
+        distance: 400,
+        duration: 2,
+        opacity: 0.8,
+        size: 40
       },
       push: {
-          quantity: 4
+        quantity: 4
       },
       repulse: {
-          distance: 200,
-          duration: 0.4
+        distance: 200,
+        duration: 0.4
       }
     }
   },
   particles: {
     color: {
-        value: '#ffffff'        // 动画连接"点"的颜色
+      value: '#ffffff' // 动画连接"点"的颜色
     },
-    links: {                    // 动画链接"线"的颜色
-        color: '#ffffff',       // 线条颜色
-        distance: 150,          // 线条长度
-        enable: true,           // 是否有线条
-        opacity: 0.5,           // 线条透明度
-        width: 1                // 线条宽度
+    links: {
+      // 动画链接"线"的颜色
+      color: '#ffffff', // 线条颜色
+      distance: 150, // 线条长度
+      enable: true, // 是否有线条
+      opacity: 0.5, // 线条透明度
+      width: 1 // 线条宽度
     },
     collisions: {
-        enable: true
+      enable: true
     },
     move: {
       direction: 'none',
       enable: true,
       outModes: {
-          default: 'bounce'
+        default: 'bounce'
       },
       random: false,
-      speed: 3,                  // 动画快慢，数值越大越快，这里我将数值改小了20230327
+      speed: 3, // 动画快慢，数值越大越快，这里我将数值改小了20230327
       straight: false
     },
     number: {
       density: {
-          enable: true,
-          area: 800
+        enable: true,
+        area: 800
       },
-      value: 80									// 粒子数量
+      value: 80 // 粒子数量
     },
     opacity: {
-        value: 0.5              // 粒子透明度
+      value: 0.5 // 粒子透明度
     },
     shape: {
-        type: 'circle'          // 粒子外观类型，可选参数：["circle","edge","triangle", "polygon","star"] 
+      type: 'circle' // 粒子外观类型，可选参数：["circle","edge","triangle", "polygon","star"]
     },
     size: {
-        value: { min: 1, max: 3 },
+      value: { min: 1, max: 3 }
     }
   },
   detectRetina: true
@@ -322,23 +324,21 @@ import createPersistedState from 'vuex-persistedstate'
 
 // 2.2.使用持久化插件
 export default createStore({
-  state: {  
+  state: {
     // menu 菜单是否折叠，默认为false，不折叠
-    isCollapsed: false,       
+    isCollapsed: false
   },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  },
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {},
   // vuex持久化插件
-  plugins: [createPersistedState({
-    // paths控制是否持久化，在paths里面的是需要持久化的
-    paths:['isCollapsed']
-  })] 
+  plugins: [
+    createPersistedState({
+      // paths控制是否持久化，在paths里面的是需要持久化的
+      paths: ['isCollapsed']
+    })
+  ]
 })
 ```
 
@@ -350,9 +350,7 @@ export default createStore({
 npm install axios
 ```
 
-
-
-# 3. server深入分析
+# 3. server 深入分析
 
 ---
 
@@ -387,15 +385,15 @@ app.listen(3007, function () {
 })
 ```
 
-## 2. 配置Cors跨域
+## 2. 配置 Cors 跨域
 
-1. 运行如下命令，安装Cors中间件：
+1. 运行如下命令，安装 Cors 中间件：
 
 ```js
 npm install cors@2.8.5       // 指定版本
 ```
 
-2. 在app.js中导入并配置cors中间件：
+2. 在 app.js 中导入并配置 cors 中间件：
 
 ```js
 // 导入 cors 中间件
@@ -409,24 +407,20 @@ app.use(cors())
 1. 通过如下代码，配置解析**application/x-www-form-urlencoded**格式的表单数据中间件：
 
 ```js
-app.use(express.urlencoded({extended:false}))
+app.use(express.urlencoded({ extended: false }))
 ```
 
 ## 4. 初始化用户模块
 
-
-
 ## 5. 创建数据库链接
 
-
-
-## 6. 安装mysql数据库
+## 6. 安装 mysql 数据库
 
 ```js
 npm install mysql
 ```
 
-1. 在项目中创建db文件夹，db/index.js文件创建
+1. 在项目中创建 db 文件夹，db/index.js 文件创建
 2. 导入数据库文件配置
 
 ```js
@@ -452,7 +446,7 @@ module.exports = db
 > 1. 对数据进行合法校验（检测表单提交的数据是否合法，是否为空）
 > 2. 检测用户名是否被占用，在数据库中查询用户名是否被占用
 > 3. 用户名没有占用，多用户密码进行加密
-> 4. 写新增用户的SQL语句
+> 4. 写新增用户的 SQL 语句
 
 ```js
 exports.regUser = (req, res) => {
@@ -513,19 +507,19 @@ exports.regUser = (req, res) => {
 
 > 前端验证为辅，后端验证为主。
 
-1. 安装@hapi/joi包，为表单中每个携带的数据项，定义验证规则：
+1. 安装@hapi/joi 包，为表单中每个携带的数据项，定义验证规则：
 
 ```js
-npm install @hapi/joi 
+npm install @hapi/joi
 ```
 
-2. 安装@escook/express-joi中间件，来实现自动对表单数据进行验证功能。
+2. 安装@escook/express-joi 中间件，来实现自动对表单数据进行验证功能。
 
 ```js
 npm install @escook/express-joi
 ```
 
-3. 新建/schema/user.js用户信息验证规则模块，并初始化如下代码：
+3. 新建/schema/user.js 用户信息验证规则模块，并初始化如下代码：
 
 ```js
 // 为表单中携带的每个数据项，定义验证规则
@@ -541,7 +535,6 @@ const joi = require('joi')
  */
 
 const username = joi.string().alphanum().min(3).max(10).required()
-
 ```
 
 ## 9. 用户登录
@@ -549,9 +542,8 @@ const username = joi.string().alphanum().min(3).max(10).required()
 > 1. 检测表单数据是否合法。
 > 2. 根据用户名查询用户数据。
 > 3. 判断用户输入的密码是否正确。
-> 4. 生成JWT的Token字符串。
+> 4. 生成 JWT 的 Token 字符串。
 
-## 10. 生成JWT的Token字符串
+## 10. 生成 JWT 的 Token 字符串
 
-> 核心注意点：在生成token字符串的时候，一定要剔除密码和头像。
-
+> 核心注意点：在生成 token 字符串的时候，一定要剔除密码和头像。
